@@ -1,0 +1,42 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/liveshop
+    username: liveshop
+    password: "1234"
+
+  flyway:
+    enabled: false
+
+mybatis:
+  type-aliases-package: co.kr.mmsoft.mmboardservice.domain
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+app:
+  jwt:
+    secret: mm-secret-key-for-jwt-token-signing-must-be-long-enough
+  upload:
+    path: c:/mm-file/freeboard
+    max-size-mb: 10
+
+my:
+  logging:
+    level: debug
+
+logging:
+  level:
+    root: info
+    org.flywaydb: ${my.logging.level}
+    org.springframework.web: ${my.logging.level}
+    co.kr.mmsoft.mmboardservice: ${my.logging.level}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1761/eureka/

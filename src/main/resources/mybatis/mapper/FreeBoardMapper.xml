@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.kr.mmsoft.mmboardservice.mapper.FreeBoardMapper">
+
+    <!-- 목록 조회: ref DESC → step ASC 으로 댓글 계층 정렬 -->
+    <select id="findAll" resultType="co.kr.mmsoft.mmboardservice.domain.FreeBoard">
+        SELECT freeboard_id, account_id, title, content, name,
+               reg_date, update_date, cnt, ref, step, depth,
+               url, freeboard_rolename, is_secret, is_deleted
+        FROM freeboard
+        WHERE is_deleted = 'N'
+        <if test="rolename != null and rolename != '' and rolename != '전체'">
+            AND freeboard_rolename = #{rolename}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (title LIKE CONCAT('%', #{keyword}, '%')
+              OR name  LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY ref DESC, step ASC
+    </select>
+
+    <!-- 단건 조회 -->
+    <select id="findById" resultType="co.kr.mmsoft.mmboardservice.domain.FreeBoard">
+        SELECT freeboard_id, account_id, title, content, name,
+               reg_date, update_date, cnt, ref, step, depth,
+               url, freeboard_rolename, is_secret, is_deleted
+        FROM freeboard
+        WHERE freeboard_id = #{id}
+          AND is_deleted = 'N'
+    </select>
+
+    <!-- 조회수 +1 -->
+    <update id="incrementCnt">
+        UPDATE freeboard SET cnt = cnt + 1 WHERE freeboard_id = #{id}
+    </update>
+
+    <!-- ref 최대값 -->
+    <select id="maxRef" resultType="int">
+        SELECT IFNULL(MAX(ref), 0) FROM freeboard
+    </select>
+
+    <!-- 댓글 등록 전: 같은 ref에서 step 이후 항목 밀기 -->
+    <update id="shiftStep">
+        UPDATE freeboard
+        SET step = step + 1
+        WHERE ref = #{ref} AND step > #{step} AND is_deleted = 'N'
+    </update>
+
+    <!-- 등록 (useGeneratedKeys로 PK 자동 채번) -->
+    <insert id="insert" parameterType="co.kr.mmsoft.mmboardservice.domain.FreeBoard"
+            useGeneratedKeys="true" keyProperty="freeboardId">
+        INSERT INTO freeboard
+            (account_id, title, content, name, ref, step, depth, url,
+             freeboard_rolename, is_secret, is_deleted)
+        VALUES
+            (#{accountId}, #{title}, #{content}, #{name},
+             #{ref}, #{step}, #{depth}, #{url},
+             #{freeboardRolename},
+             <choose>
+                 <when test='isSecret != null and isSecret == "Y"'>'Y'</when>
+                 <otherwise>'N'</otherwise>
+             </choose>,
+             'N')
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="co.kr.mmsoft.mmboardservice.domain.FreeBoard">
+        UPDATE freeboard
+        SET title              = #{title},
+            content            = #{content},
+            url                = #{url},
+            freeboard_rolename = #{freeboardRolename},
+            is_secret          = <choose>
+                                     <when test='isSecret != null and isSecret == "Y"'>'Y'</when>
+                                     <otherwise>'N'</otherwise>
+                                 </choose>,
+            update_date        = NOW()
+        WHERE freeboard_id = #{freeboardId}
+          AND is_deleted   = 'N'
+    </update>
+
+    <!-- 소프트 삭제 -->
+    <update id="delete">
+        UPDATE freeboard
+        SET is_deleted  = 'Y',
+            update_date = NOW()
+        WHERE freeboard_id = #{id}
+    </update>
+
+</mapper>
