@@ -23,40 +23,48 @@ ext {
 }
 
 dependencies {
-    // 1. Config Server 핵심
-    implementation 'org.springframework.cloud:spring-cloud-config-server'
-
-    // 2. 웹 환경 (에러 원인이었던 WebMvcAutoConfiguration 해결용)
+    // 웹 환경
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // 3. 모니터링 및 설정 갱신용
+    // Config Client (Config Server에서 설정을 가져옴)
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+    // Eureka Client (서비스 등록)
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // MyBatis + MySQL
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Flyway (DB 마이그레이션)
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+
+    // JWT 파싱 (토큰에서 accountId 추출)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // 모니터링
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    /*
-MSA 환경에서 Eureka, K8s(쿠버네틱스)의 경우 Config Server가 살아있는지 주기적으로 호가인함,
-이때 actuator가 필요함
- */
-    // 프로메테우스에게 매트릭(Metrics- 수치화된 데이터) 제공하기
-    implementation("io.micrometer:micrometer-registry-prometheus")
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.14.3'
-
-// 실제 코드용 Lombok
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-// 테스트 코드에서 Lombok(@Slf4j 등)을 사용하기 위해 반드시 필요!
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+
 tasks.named('test') {
     useJUnitPlatform()
 }
