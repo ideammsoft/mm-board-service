@@ -1,4 +1,4 @@
-name: mm-board-server CI
+name: mm-board-service CI
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
           --health-retries=20
 
     env:
-      SERVICE_NAME: mm-board-server
+      SERVICE_NAME: mm-board-service
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2g"
 
       # DB
@@ -47,7 +47,7 @@ jobs:
       # 이미지
       IMAGE_REGISTRY: ghcr.io
       IMAGE_OWNER: ${{ github.repository_owner }}
-      IMAGE_NAME: mm-board-server
+      IMAGE_NAME: mm-board-service
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
