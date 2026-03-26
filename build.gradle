@@ -19,9 +19,14 @@ repositories {
 }
 
 ext {
+    // Spring Cloud 버전 설정
     set('springCloudVersion', "2025.0.1")
 }
-
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
 dependencies {
     // 웹 환경
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -59,11 +64,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
 
 tasks.named('test') {
     useJUnitPlatform()

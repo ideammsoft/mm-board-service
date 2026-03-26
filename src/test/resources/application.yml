@@ -1,0 +1,16 @@
+spring:
+  config:
+    import: "optional:none"
+  cloud:
+    config:
+      enabled: false
+      fail-fast: false
+  flyway:
+    enabled: false
+
+app:
+  jwt:
+    secret: dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RzLW11c3QtYmUtbG9uZy1lbm91Z2g=
+  upload:
+    path: /tmp/test-upload
+    max-size-mb: 10
