@@ -39,4 +39,4 @@ logging:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:1761/eureka/
+      defaultZone: http://mm-eureka-server:1761/eureka/
