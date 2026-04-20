@@ -4,8 +4,27 @@
 
 <mapper namespace="co.kr.mmsoft.mmboardservice.mapper.FreeBoardMapper">
 
+    <!-- resultMap: 컬럼명 → 필드명 명시 매핑 -->
+    <resultMap id="freeBoardMap" type="co.kr.mmsoft.mmboardservice.domain.FreeBoard">
+        <id     column="freeboard_id"       property="freeboardId" />
+        <result column="account_id"         property="accountId" />
+        <result column="title"              property="title" />
+        <result column="content"            property="content" />
+        <result column="name"               property="name" />
+        <result column="reg_date"           property="regDate" />
+        <result column="update_date"        property="updateDate" />
+        <result column="cnt"                property="cnt" />
+        <result column="ref"                property="ref" />
+        <result column="step"               property="step" />
+        <result column="depth"              property="depth" />
+        <result column="url"                property="url" />
+        <result column="freeboard_rolename" property="freeboardRolename" />
+        <result column="is_secret"          property="isSecret" />
+        <result column="is_deleted"         property="isDeleted" />
+    </resultMap>
+
     <!-- 목록 조회: ref DESC → step ASC 으로 댓글 계층 정렬 -->
-    <select id="findAll" resultType="co.kr.mmsoft.mmboardservice.domain.FreeBoard">
+    <select id="findAll" resultMap="freeBoardMap">
         SELECT freeboard_id, account_id, title, content, name,
                reg_date, update_date, cnt, ref, step, depth,
                url, freeboard_rolename, is_secret, is_deleted
@@ -22,7 +41,7 @@
     </select>
 
     <!-- 단건 조회 -->
-    <select id="findById" resultType="co.kr.mmsoft.mmboardservice.domain.FreeBoard">
+    <select id="findById" resultMap="freeBoardMap">
         SELECT freeboard_id, account_id, title, content, name,
                reg_date, update_date, cnt, ref, step, depth,
                url, freeboard_rolename, is_secret, is_deleted
