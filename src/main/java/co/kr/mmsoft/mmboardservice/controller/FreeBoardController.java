@@ -92,9 +92,10 @@ public class FreeBoardController {
                 boolean canSee = admin ||
                     (myAccountId != null && myAccountId.equals(post.getAccountId()));
                 if (!canSee) {
-                    post.setTitle("비밀 게시글입니다.");
+                    // 제목은 그대로 노출하고 내용·첨부만 보호 (목록에서 자물쇠 표시)
                     post.setContent("");
                     post.setUrl(null);
+                    post.setLocked(true);
                 }
             }
         });

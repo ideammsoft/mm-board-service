@@ -20,4 +20,5 @@ public class FreeBoard {
     private String        freeboardRolename; // 게시판 유형 (공지/안내/일반)
     private String        isSecret;          // 비밀글 여부 (Y/N)
     private String        isDeleted;         // 삭제 여부 (Y/N)
+    private boolean       locked;            // 비밀글이면서 열람 불가(제목만 노출) 여부 - 응답 전용
 }
